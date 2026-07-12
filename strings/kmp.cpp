@@ -57,7 +57,7 @@ int count(string &s, string &t) {
     for(int i = 0; i < n; i++) {
         if(pi[i] == len) {
             // Match found! Calculate the starting 0-based index in the original text
-            // matches.pb(i - 2 * p);
+            // matches.pb(i - 2 * len);
             ans++;
         }
     }
