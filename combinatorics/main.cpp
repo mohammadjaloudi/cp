@@ -42,6 +42,17 @@ void precomp() {
     for(int i = mx - 1; i >= 0; i--) inv[i] = inv[i + 1] * (i + 1) % MOD;
 }
 
+long long C[35][35];
+ 
+void precompute2() {
+    for (int i = 0; i <= 34; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (j == 0 || j == i) C[i][j] = 1;
+            else C[i][j] = C[i - 1][j - 1] + C[i - 1][j];
+        }
+    }
+}
+
 void solve() {
     
 }
