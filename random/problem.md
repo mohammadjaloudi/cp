@@ -1,7 +1,5 @@
 # Range Frequent Element Query 
 
-A high-performance algorithmic solution for finding frequent elements in array subsegments. This repository provides both **Deterministic (Segment Tree)** and **Probabilistic (Monte Carlo)** approaches written in modern C++20.
-
 ---
 
 ## 📌 Problem Description
