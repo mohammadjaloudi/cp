@@ -1,7 +1,5 @@
 # Range Frequent Element Query 
 
----
-
 ## 📌 Problem Description
 
 Given an array $A$ of size $N$, an integer parameter $k$ ($1 \le k \le 3$), and $Q$ range queries $[L, R]$ (1-based index):
