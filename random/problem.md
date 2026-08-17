@@ -1,9 +1,5 @@
 # Range Frequent Element Query 
 
-![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
-![Build](https://img.shields.io/badge/build-passing-brightgreen)
-![License](https://img.shields.io/badge/license-MIT-blue)
-
 A high-performance algorithmic solution for finding frequent elements in array subsegments. This repository provides both **Deterministic (Segment Tree)** and **Probabilistic (Monte Carlo)** approaches written in modern C++20.
 
 ---
