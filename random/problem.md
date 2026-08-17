@@ -40,7 +40,3 @@ $$\text{freq}(v, L, R) = \text{upper\_bound}(pos[v], R) - \text{lower\_bound}(po
 | **Monte Carlo Sampling** | $O(N \log N + Q \cdot M \log N)$ | $O(N)$ | Probabilistic ($P_{error} < 10^{-7}$) |
 
 ---
-
-## 🛠️ Compilation & Execution
-
-```bash
