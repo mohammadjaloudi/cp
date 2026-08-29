@@ -301,8 +301,7 @@ struct Trie {
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return {"", 0};
+            if(trie[curr].child[x] == -1) return {"", 0};
 
             curr = trie[curr].child[x];
         }
