@@ -42,10 +42,14 @@ struct Trie {
 
         // Number of strings ending at this node
         int endCnt;
+        
+        string bestWord;
+        int bestFreq;
 
         Node() {
             fill(child, child + 26, -1);
-            cnt = endCnt = 0;
+            cnt = endCnt = bestFreq = 0;
+            bestWord = "";
         }
     };
 
@@ -53,6 +57,26 @@ struct Trie {
 
     Trie() {
         trie.emplace_back(); // root
+    }
+    
+    void update(string s, int freq) {
+        int curr = 0;
+        for(auto c : s) {
+            int x = c - 'a';
+
+            curr = trie[curr].child[x];
+
+            if(freq > trie[curr].bestFreq) {
+                trie[curr].bestFreq = freq;
+                trie[curr].bestWord = s;
+            }
+            else if(freq == trie[curr].bestFreq) {
+                if(trie[curr].bestWord.empty() ||
+                s < trie[curr].bestWord) {
+                    trie[curr].bestWord = s;
+                }
+            }
+        }
     }
 
     void insert(string s) {
@@ -71,6 +95,8 @@ struct Trie {
         }
 
         trie[curr].endCnt++;
+        // int freq = trie[curr].endCnt;
+        // update(s, freq);
     }
     
     void erase(string s) {
@@ -233,40 +259,67 @@ struct Trie {
         }
     }
 
-    string mostOccurre(string s) {
+    // string mostOccurre(string s) {
+    //     int curr = 0;
+    //     for(char c : s) {
+    //         int x = c - 'a';
+
+    //         if(trie[curr].child[x] == -1) return "";
+
+    //         curr = trie[curr].child[x];
+    //     }
+
+    //     string ans = s;
+    //     int best = 0;
+
+    //     function<void(int, string&)> dfs = [&](int u, string &cur) {
+    //         if(trie[u].endCnt > best) {
+    //             best = trie[u].endCnt;
+    //             ans = cur;
+    //         }
+
+    //         for(int i = 0; i < 26; i++) {
+    //             int v = trie[u].child[i];
+    //             if(v == -1) continue;
+
+    //             cur += ('a' + i);
+    //             dfs(v, cur);
+    //             cur.pop_back();
+    //         }
+
+    //     };
+
+    //     string cur = s;
+    //     dfs(curr, cur);
+
+    //     return ans;
+    // }
+
+    pair<string, int> mostOccurre(string s) {
         int curr = 0;
+
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1) return "";
+            if(trie[curr].child[x] == -1)
+                return {"", 0};
 
             curr = trie[curr].child[x];
         }
 
-        string ans = s;
-        int best = 0;
+        return {trie[curr].bestWord, trie[curr].bestFreq};
+    }
 
-        function<void(int, string&)> dfs = [&](int u, string &cur) {
-            if(trie[u].endCnt > best) {
-                best = trie[u].endCnt;
-                ans = cur;
-            }
+    int getFrequency(string s) {
+        int curr = 0;
+        for(char c : s) {
+            int x = c - 'a';
 
-            for(int i = 0; i < 26; i++) {
-                int v = trie[u].child[i];
-                if(v == -1) continue;
+            if(trie[curr].child[x] == -1) return 0;
 
-                cur += ('a' + i);
-                dfs(v, cur);
-                cur.pop_back();
-            }
-
-        };
-
-        string cur = s;
-        dfs(curr, cur);
-
-        return ans;
+            curr = trie[curr].child[x];
+        }
+        return trie[curr].bestFreq;
     }
 };
 
@@ -287,12 +340,11 @@ void solve() {
     while(q--) {
         string s;
         cin >> s;
-        if(trie.startsWith(s) == 0) cout << -1 << endl;
-        else {
-            string t = trie.mostOccurre(s);
-            int cnt = mp[t];
-            cout << t << ' ' << cnt << endl;
-        }
+
+        auto [t, cnt] = trie.mostOccurre(s);
+
+        if(t.empty()) cout << -1 << endl;
+        else cout << t << ' ' << cnt << endl;
     }
 }
 
