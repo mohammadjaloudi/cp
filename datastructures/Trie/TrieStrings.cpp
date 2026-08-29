@@ -34,7 +34,6 @@ long long mod = 998244353;
 int mx = 2e6;
 
 struct Trie {
-
     struct Node {
         int child[26];
 
@@ -163,11 +162,8 @@ struct Trie {
         string ans = s;
 
         while(true) {
-
-            // Current prefix itself is a word
             if(trie[curr].endCnt > 0) return ans;
 
-            // Try a -> z
             for(int i = 0; i < 26; i++) {
                 if(trie[curr].child[i] != -1) {
                     ans += char('a' + i);
@@ -236,6 +232,42 @@ struct Trie {
             curr = trie[curr].child[bestChild];
         }
     }
+
+    string mostOccurre(string s) {
+        int curr = 0;
+        for(char c : s) {
+            int x = c - 'a';
+
+            if(trie[curr].child[x] == -1) return "";
+
+            curr = trie[curr].child[x];
+        }
+
+        string ans = s;
+        int best = 0;
+
+        function<void(int, string&)> dfs = [&](int u, string &cur) {
+            if(trie[u].endCnt > best) {
+                best = trie[u].endCnt;
+                ans = cur;
+            }
+
+            for(int i = 0; i < 26; i++) {
+                int v = trie[u].child[i];
+                if(v == -1) continue;
+
+                cur += ('a' + i);
+                dfs(v, cur);
+                cur.pop_back();
+            }
+
+        };
+
+        string cur = s;
+        dfs(curr, cur);
+
+        return ans;
+    }
 };
 
 void solve() {
@@ -257,7 +289,7 @@ void solve() {
         cin >> s;
         if(trie.startsWith(s) == 0) cout << -1 << endl;
         else {
-            string t = trie.maxFreq(s);
+            string t = trie.mostOccurre(s);
             int cnt = mp[t];
             cout << t << ' ' << cnt << endl;
         }
