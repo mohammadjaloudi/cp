@@ -33,8 +33,6 @@ long long INF = 1e18;
 long long mod = 998244353;
 int mx = 2e6;
 
-map<string, int> mp;
-
 struct Trie {
 
     struct Node {
@@ -48,8 +46,7 @@ struct Trie {
 
         Node() {
             fill(child, child + 26, -1);
-            cnt = 0;
-            endCnt = 0;
+            cnt = endCnt = 0;
         }
     };
 
@@ -58,10 +55,6 @@ struct Trie {
     Trie() {
         trie.emplace_back(); // root
     }
-
-    // =========================================================
-    // INSERT
-    // =========================================================
 
     void insert(string s) {
         int curr = 0;
@@ -80,14 +73,9 @@ struct Trie {
 
         trie[curr].endCnt++;
     }
-
-    // =========================================================
-    // ERASE
-    // =========================================================
-
+    
     void erase(string s) {
-        if(countExact(s) == 0)
-            return;
+        if(countExact(s) == 0) return;
 
         int curr = 0;
 
@@ -101,18 +89,13 @@ struct Trie {
         trie[curr].endCnt--;
     }
 
-    // =========================================================
-    // COUNT EXACT
-    // =========================================================
-
     int countExact(string s) {
         int curr = 0;
 
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return 0;
+            if(trie[curr].child[x] == -1) return 0;
 
             curr = trie[curr].child[x];
         }
@@ -120,17 +103,9 @@ struct Trie {
         return trie[curr].endCnt;
     }
 
-    // =========================================================
-    // SEARCH
-    // =========================================================
-
     bool search(string s) {
         return countExact(s) > 0;
     }
-
-    // =========================================================
-    // STARTS WITH
-    // =========================================================
 
     bool startsWith(string s) {
         int curr = 0;
@@ -138,18 +113,13 @@ struct Trie {
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return false;
+            if(trie[curr].child[x] == -1) return 0;
 
             curr = trie[curr].child[x];
         }
 
-        return true;
+        return 1;
     }
-
-    // =========================================================
-    // COUNT PREFIX
-    // =========================================================
 
     int countPrefix(string s) {
         int curr = 0;
@@ -157,8 +127,7 @@ struct Trie {
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return 0;
+            if(trie[curr].child[x] == -1) return 0;
 
             curr = trie[curr].child[x];
         }
@@ -166,19 +135,13 @@ struct Trie {
         return trie[curr].cnt;
     }
 
-    // =========================================================
-    // LONGEST EXISTING PREFIX
-    // =========================================================
-
     string longestExistingPrefix(string s) {
         int curr = 0;
         string ans;
-
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                break;
+            if(trie[curr].child[x] == -1) break;
 
             curr = trie[curr].child[x];
             ans += c;
@@ -187,19 +150,12 @@ struct Trie {
         return ans;
     }
 
-    // =========================================================
-    // SMALLEST WORD WITH PREFIX
-    // =========================================================
-
     string findSmallest(string s) {
         int curr = 0;
-
-        // Go to the prefix
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return "";
+            if(trie[curr].child[x] == -1) return "";
 
             curr = trie[curr].child[x];
         }
@@ -209,12 +165,10 @@ struct Trie {
         while(true) {
 
             // Current prefix itself is a word
-            if(trie[curr].endCnt > 0)
-                return ans;
+            if(trie[curr].endCnt > 0) return ans;
 
             // Try a -> z
             for(int i = 0; i < 26; i++) {
-
                 if(trie[curr].child[i] != -1) {
                     ans += char('a' + i);
                     curr = trie[curr].child[i];
@@ -223,20 +177,13 @@ struct Trie {
             }
         }
     }
-
-    // =========================================================
-    // LARGEST WORD WITH PREFIX
-    // =========================================================
 
     string findLargest(string s) {
         int curr = 0;
-
-        // Go to the prefix
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return "";
+            if(trie[curr].child[x] == -1) return "";
 
             curr = trie[curr].child[x];
         }
@@ -244,13 +191,9 @@ struct Trie {
         string ans = s;
 
         while(true) {
+            if(trie[curr].endCnt > 0) return ans;
 
-            if(trie[curr].endCnt > 0)
-                return ans;
-
-            // Try z -> a
             for(int i = 25; i >= 0; i--) {
-
                 if(trie[curr].child[i] != -1) {
                     ans += char('a' + i);
                     curr = trie[curr].child[i];
@@ -260,19 +203,12 @@ struct Trie {
         }
     }
 
-    // =========================================================
-    // MOST FREQUENT WORD WITH PREFIX
-    // =========================================================
-
     string maxFreq(string s) {
         int curr = 0;
-
-        // Go to the prefix
         for(char c : s) {
             int x = c - 'a';
 
-            if(trie[curr].child[x] == -1)
-                return "";
+            if(trie[curr].child[x] == -1) return "";
 
             curr = trie[curr].child[x];
         }
@@ -280,19 +216,13 @@ struct Trie {
         string ans = s;
 
         while(true) {
-
-            // Frequency of the current word
             int bestFreq = trie[curr].endCnt;
-
             int bestChild = -1;
 
-            // Find the child containing the most strings
             for(int i = 0; i < 26; i++) {
-
                 int nxt = trie[curr].child[i];
 
-                if(nxt == -1)
-                    continue;
+                if(nxt == -1) continue;
 
                 if(trie[nxt].cnt > bestFreq) {
                     bestFreq = trie[nxt].cnt;
@@ -300,9 +230,7 @@ struct Trie {
                 }
             }
 
-            // No child has a better answer
-            if(bestChild == -1)
-                return ans;
+            if(bestChild == -1) return ans;
 
             ans += char('a' + bestChild);
             curr = trie[curr].child[bestChild];
@@ -310,11 +238,11 @@ struct Trie {
     }
 };
 
-
 void solve() {
     int n;
     cin >> n;
     Trie trie;
+    map<string, int> mp;
     for(int i = 0; i < n; i++) {
         string s;
         cin >> s;
