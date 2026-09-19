@@ -1,87 +1,107 @@
+// #define _CRT_SECURE_NO_WARNINGS
 #include <bits/stdc++.h>
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+
+// using namespace __gnu_pbds;
 using namespace std;
 
-using ll = long long;
+// #pragma GCC optimize("Ofast")
+// #pragma GCC optimize("unroll-loops")
+// #pragma GCC target("sse,sse2,sse3,ssse3,sse4,lzcnt,popcnt,abm,mmx,avx,avx2,bmi,bmi2")
 
-const ll MOD = 1'000'000'007;
+// template <typename T>
+// using ordered_set =
+//     tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// template <typename T>
+// using ordered_multiset = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
-mt19937 rng(
-    chrono::steady_clock::now().time_since_epoch().count()
-);
+// ordered_set<int> st
 
-const ll P =
-    uniform_int_distribution<ll>(256, MOD - 2)(rng);
+// mt19937_64 rng(chrono::steady_clock::now().time_since_epoch().count());
+// mt19937 rng2(chrono::steady_clock::now().time_since_epoch().count());
+
+// #define int long long
+#define int64 long long
+#define endl "\n"
+#define pb push_back
+#define all(x) x.begin(), x.end()
+#define print(x) for(auto i : x) cout << i << ' ';
+const double EPS = 1e-9;
+long long MOD = 1e9 + 7;
+long long INF = 1e18;
+long long mod = 998244353;
+int mx = 2e6;
 
 struct Hash {
+    const long long MOD = 1e9 + 7;
+    const int P = 31;
+ 
     int n;
-    vector<ll> prefix;
-    vector<ll> power;
-
+    vector<int> h, p;
+ 
     Hash(const string &s) {
         n = s.size();
-
-        prefix.assign(n + 1, 0);
-        power.assign(n + 1, 1);
-
-        // P^i
-        for(int i = 1; i <= n; i++) {
-            power[i] = power[i - 1] * P % MOD;
+ 
+        h.assign(n + 1, 0);
+        p.assign(n + 1, 1);
+ 
+        for (int i = 1; i <= n; i++) {
+            p[i] = 1LL * p[i - 1] * P % MOD;
         }
-
-        // Prefix hashes
-        for(int i = 0; i < n; i++) {
-            ll val = s[i] - 'a' + 1;
-
-            prefix[i + 1] =
-                (prefix[i] * P + val) % MOD;
+ 
+        for (int i = 0; i < n; i++) {
+            int val = s[i] - 'a' + 1;
+            h[i + 1] = (1LL * h[i] * P + val) % MOD;
         }
     }
-
-    // hash of s[l ... r], inclusive
-    ll getHash(int l, int r) {
-        int len = r - l + 1;
-
-        return (
-            prefix[r + 1]
-            - prefix[l] * power[len] % MOD
-            + MOD
-        ) % MOD;
+ 
+    int getHash(int l, int r) {
+        if (l > r) return 0;
+        return (h[r + 1] - 1LL * h[l] * p[r - l + 1] % MOD + MOD) % MOD;
     }
 };
-
+ 
 void solve() {
-    string s, t;
-    cin >> s >> t;
-
-    int n = s.size();
-    int m = t.size();
-
-    if(m > n) {
-        cout << 0 << '\n';
-        return;
+    int n, k;
+    string s;
+    cin >> n >> k >> s;
+ 
+    Hash hash1(s);
+    string t = s;
+    reverse(t.begin(), t.end());
+    Hash hash2(t);
+ 
+    for (int i = 0; i + k <= n; i++) {
+        int left1 = hash1.getHash(0, i - 1);
+        int right1 = hash1.getHash(i + k, n - 1 );
+        int len1 = n - (i + k);
+ 
+        int h1 = (1LL * left1 * hash1.p[len1] + right1) % MOD;
+ 
+        int left2 = hash2.getHash(0, n - i - k - 1);
+        int right2 = hash2.getHash(n - i, n - 1);
+        int len2 = i;
+ 
+        int h2 = (1LL * left2 * hash2.p[len2] + right2) % MOD;
+ 
+        if (h1 == h2) return void(cout << 1 << endl);
     }
-
-    Hash hs(s);
-    Hash ht(t);
-
-    ll target = ht.getHash(0, m - 1);
-
-    int ans = 0;
-
-    for(int i = 0; i + m <= n; i++) {
-        if(hs.getHash(i, i + m - 1) == target) {
-            ans++;
-        }
-    }
-
-    cout << ans << '\n';
+ 
+    cout << 0 << endl;
 }
 
-int main() {
+int32_t main() {
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
     ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(0);
 
-    solve();
+    // cout << fixed << setprecision(7);
 
+    int TESTCASES = 1;
+    cin >> TESTCASES;
+    while (TESTCASES--) solve();
+ 
     return 0;
 }
