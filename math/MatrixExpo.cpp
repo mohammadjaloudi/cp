@@ -33,14 +33,16 @@ long long INF = 1e18;
 long long mod = 998244353;
 int mx = 2e6;
 
-using Matrix = vector<vector<int64>>;
+using Matrix = vector<vector<int>>;
 
-Matrix multiply(Matrix &a, Matrix &b) {
+Matrix multiply(const Matrix &a, const Matrix &b) {
     int n = a.size();
-    Matrix C(n, vector<int> (n));
+    Matrix C(n, vector<int>(n));
+
     for(int i = 0; i < n; i++) {
-        for(int j = 0; j < n; j++) {
-            for(int k = 0; k < n; k++) C[i][j] = (C[i][j] + a[i][k] * b[k][j]) % MOD;
+        for(int k = 0; k < n; k++) {
+            if(a[i][k] == 0) continue;
+            for(int j = 0; j < n; j++) C[i][j] = (C[i][j] + a[i][k] * b[k][j]) % MOD;
         }
     }
 
@@ -62,13 +64,20 @@ Matrix binpow(Matrix a, int b) {
 }
 
 void solve() {
-    int n;
-    cin >> n;
+    int n, m, k;
+    cin >> n >> m >> k;
 
-    Matrix T = {{1, 1}, {1, 0}};
+    Matrix t(n, vector<int> (n));
+    for(int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        u--, v--;
+        t[v][u]++;
+    }
 
-    Matrix ans = binpow(T, n);
-    cout << ans[0][1] << endl;
+    Matrix ans = binpow(t, k);
+
+    cout << ans[n - 1][0] << endl;
 }
 
 int32_t main() {
